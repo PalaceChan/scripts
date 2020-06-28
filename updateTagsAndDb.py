@@ -3,11 +3,13 @@ import os
 import shutil
 import subprocess
 
-tagRoot = os.path.expanduser("~/rabbit/tags")
-locRoot = os.path.expanduser("~/rabbit/locates")
+rootDir = os.path.expanduser("~/rabbit/tagsAndLocates")
+rootDir = os.path.expanduser("~/rabbit/tagsAndLocates")
 
 allTagPaths = [
+    "/usr/include/",
     "~/.emacs.d/elpa/",
+    "~/development/helm-shell-history/",
 ]
 
 allLocPaths = [
@@ -55,29 +57,11 @@ def doLocate(rootPath):
     print(emacsCommand)
 
 if __name__ == '__main__':
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-t', nargs = '?', default = '?')
-    args = parser.parse_args()
-    if args.t == 'tag':
-        if not os.path.exists(tagRoot):
-            os.mkdir(tagRoot)
-        doTags(tagRoot)
-    elif args.t == 'btag':
-        if os.path.exists(tagRoot):
-            backup(tagRoot)
-            os.mkdir(tagRoot)
-        doTags(tagRoot)
-    elif args.t == 'loc':
-        if not os.path.exists(locRoot):
-            os.mkdir(locRoot)
-        doLocate(locRoot)
-    elif args.t == 'bloc':
-        if os.path.exists(locRoot):
-            backup(locRoot)
-            os.mkdir(locRoot)
-        doLocate(locRoot)
-    else:
-        raise ValueError
-        
-               
+    if os.path.exists(rootDir):
+        backup(rootDir)
+        os.mkdir(rootDir)
+
+    if allTagPaths:
+        doTags(rootDir)
+    if allLocPaths:
+        doLocate(rootDir)
