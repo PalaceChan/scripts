@@ -12,14 +12,13 @@ allTagPaths = [
     "~/development/helm-shell-history/",
 ]
 
-allLocPaths = [
+allLocPaths = []
 
-]
 
 def backup(path):
-    old = f'{path}.old'
-    older = f'{path}.older'
-    oldest = f'{path}.oldest'
+    old = f"{path}.old"
+    older = f"{path}.older"
+    oldest = f"{path}.oldest"
     if not os.path.exists(old):
         shutil.move(path, old)
     else:
@@ -37,26 +36,29 @@ def backup(path):
                 shutil.move(old, older)
                 shutil.move(path, old)
 
+
 def doTags(rootPath):
-    allFolders = ' '.join(allTagPaths)
-    fullCmd = f'ctags -e --verbose --totals=yes --links=no --kinds-c++=+p --languages=c,c++,lisp --langmap=c++:+.I -R {allFolders} &> ctags.out'
+    allFolders = " ".join(allTagPaths)
+    fullCmd = f"ctags -e --verbose --totals=yes --links=no --kinds-c++=+p --languages=c,c++,lisp --langmap=c++:+.I -R {allFolders} &> ctags.out"
     print(fullCmd)
-    subprocess.check_call(fullCmd, shell = True, cwd = rootPath)
+    subprocess.check_call(fullCmd, shell=True, cwd=rootPath)
+
 
 def doLocate(rootPath):
     i = 0
     for p in allLocPaths:
-        updateDbCmd = f'updatedb -l 0 -o {rootPath}/{i}.db -U {p}'
+        updateDbCmd = f"updatedb -l 0 -o {rootPath}/{i}.db -U {p}"
         print(updateDbCmd)
-        subprocess.check_call(updateDbCmd, shell = True, cwd = rootPath)
+        subprocess.check_call(updateDbCmd, shell=True, cwd=rootPath)
         i = i + 1
-    pathVariable = ':'.join([f'{rootPath}/{idx}.db' for idx in range(i)])
-    emacsCommand = f'locate %s -d {pathVariable} -e --regex %s'
-    with open(f'{rootPath/cmd.txt}', 'w') as cmdFile:
-        cmdFile.write(emacsCommand + '\n')
+    pathVariable = ":".join([f"{rootPath}/{idx}.db" for idx in range(i)])
+    emacsCommand = f"locate %s -d {pathVariable} -e --regex %s"
+    with open(f"{rootPath/cmd.txt}", "w") as cmdFile:
+        cmdFile.write(emacsCommand + "\n")
     print(emacsCommand)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     if os.path.exists(rootDir):
         backup(rootDir)
         os.mkdir(rootDir)
